@@ -1,7 +1,0 @@
-*.out
-*.txt
-*.exe
-.DS*
-.vscode
-*.java
-*.class
