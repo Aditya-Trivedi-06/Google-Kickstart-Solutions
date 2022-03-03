@@ -1,0 +1,201 @@
+#include <bits/stdc++.h>
+#include <chrono>
+
+#define ll long long
+#define ld double
+#define uint unsigned int
+#define ull unsigned long long
+
+#define ff first
+#define ss second
+
+// For Loops ----------------------------
+
+#define lp(i, n) for (int i = 0; i < n; i++)
+#define lp1(i, n) for (int i = 1; i < n; i++)
+
+// Vectors / pairs / maps  ---------------
+
+#define pairint pair<int, int> pint
+#define pairll pair<ll, ll> pll
+
+#define mapn map<int, int> mint
+#define mapll map<ll, ll> mll
+
+#define vect(v) vector<int> v
+#define vectl(vl) vector<long long> vl
+#define vectodd(vodd) vector<int> vodd
+#define vecteven(veven) vector<int> veven
+#define vects(vs) vector<string> vs
+
+#define eb emplace_back
+#define pb push_back
+
+#define mp make_pair
+
+#define vectin(v, n)            \
+    for (int i = 0; i < n; i++) \
+    {                           \
+        int ele;                \
+        cin >> ele;             \
+        v.eb(ele);              \
+    }
+
+#define vectprint(v)      \
+    for (auto i : v)      \
+    {                     \
+        cout << i << ' '; \
+    }
+
+#define mploop(mpn) for (auto i = (mpn).begin(); i != (mpn).end(); i++)
+#define vectloop(v) for (auto i = (v).begin(); i != (v).end(); i++)
+
+// Usefull functions --------------------
+
+// # define 	bn 				begin
+// # define 	rs 				resize
+#define ALL(v) v.begin(), v.end()
+#define SORT(v) sort(ALL(v))
+#define REV(v) reverse(ALL(v))
+
+#define lb lower_bound
+#define ub upper_bound
+
+#define bs binary_search
+
+#define gcd __gcd
+
+// Max nd Mins -------------------------
+
+#define min3(a, b, c) min(min(a, b), c)
+#define min4(a, b, c, d) min(min(a, b), min(c, d))
+#define max3(a, b, c) max(max(a, b), c)
+#define max4(a, b, c, d) max(max(a, b), max(c, d))
+
+#define mod 1000000007
+
+// Yes/ No for CodeForces ---------------
+// # define 	yes 			cout << "YES" << endl
+// # define 	no 				cout << "NO" << endl
+
+using namespace std;
+using namespace std::chrono;
+
+ll n, h;
+int a[21], b[21];
+
+int rec(int *a, int i, ll sum, vector <bool> on_day, unordered_set <vector <bool>> &us)
+{
+    if (i >= n)
+    {
+        if (sum >= h)
+        {
+            // cout << sum << endl;
+            // for (auto i : on_day)
+            //     cout << i << ' ';
+            // cout << endl;
+            us.insert(on_day);
+            return 1;
+        }
+        else    
+            return 0;
+    }
+    
+    // if (sum >= h)
+    // {
+    //     // if (i+1 < n)
+    //         return 1 + rec(a, i+1, sum + a[i]) + rec(a, i+1, sum);
+    //     // else
+    //         // return 1 + rec(a, i + 1, sum);
+    // }
+
+    // if (i+1 < n)
+    on_day.eb(1);
+    int incl = rec(a, i + 1, sum + a[i], on_day, us);
+    on_day.pop_back();
+    on_day.eb(0);
+    int excl = rec(a, i + 1, sum, on_day, us);
+
+    return incl + excl;
+    // else
+        // return 1 + rec(a, i + 1, sum);
+}
+
+void solve()
+{
+    cin >> n >> h;
+    memset(a, 0, sizeof(a));
+    memset(b, 0, sizeof(b));
+
+    lp(i, n)
+        cin >> a[i];
+
+    lp(i, n)
+        cin >> b[i];
+    
+    vector <bool> vis;
+
+    unordered_set <vector <bool>> usa, usb;
+
+    // cout << "A : " << rec(a, 0, 0, vis, usa) << endl;
+    rec(a, 0, 0, vis, usa);
+    vis.clear();
+    // cout << "B : " << rec(b, 0, 0, vis, usb) << endl;
+    rec(b, 0, 0, vis, usb);
+
+    // cout << "For A : " << endl;
+    // for (auto i : usa)
+    // {
+    //     vectprint(i);
+    //     cout << endl;
+    // }
+    // cout << "For B : " << endl;
+    // for (auto i : usb)
+    // {
+    //     vectprint(i);
+    //     cout << endl;
+    // }
+    if (usa.size() == 0 or usb.size() == 0)
+    {
+        cout << 0 << endl;
+        return;
+    }
+
+    int count = 0;
+
+    for (auto i : usa)
+    {
+        for (auto j : usb)
+        {
+            int it = 0;
+            for (it; it < n; it++)
+            {
+                if (i[it] == 0 and j[it] == 0)
+                    break;
+            }
+            if (it == n)
+                count++;
+        }
+    }
+
+    cout << count << endl;
+}
+
+int main()
+{
+    // for t test cases
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    // auto start = high_resolution_clock::now();
+    int t = 1, T;
+    cin >> T;
+    while (t <= T)
+    {
+        cout << "Case #" << t << ": ";
+        solve();
+        t++;
+    }
+    // auto stop = high_resolution_clock::now();
+    // auto duration = duration_cast<microseconds>(stop - start);
+    // cout << duration.count() / 1000000 << " S " << endl;
+}
